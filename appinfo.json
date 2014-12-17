@@ -9,10 +9,10 @@
     "resources": {
         "media": [
             {
+                "file": "images/rpi_menu_icon.png",
                 "menuIcon": true,
-                "type": "png",
-                "name": "IMAGE_MENU_ICON",
-                "file": "images/menu_icon.png"
+                "name": "IMAGE_MENU_ICON_PNG",
+                "type": "png"
             }
         ]
     },
