@@ -7,7 +7,14 @@
     "longName": "RPI Shuttle Schedule",
     "projectType": "pebblejs",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "menuIcon": true,
+                "type": "png",
+                "name": "IMAGE_MENU_ICON",
+                "file": "images/menu_icon.png"
+            }
+        ]
     },
     "shortName": "RPI Shuttles",
     "uuid": "200e7675-e35d-4dd3-9c08-65e27d5e5b0e",
