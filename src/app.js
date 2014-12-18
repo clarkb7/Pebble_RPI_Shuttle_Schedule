@@ -8,7 +8,7 @@
 
 //imports
 var UI = require('ui');
-
+var Vector2 = require('vector2');
 //Schedule object
 var shuttle_schedule;
 
@@ -92,6 +92,28 @@ var get_sched_info = function(sched_index) {
   return [shuttle_schedule.schedules[sched_index].name, items];
 };
 
+//Returns a page of times for a schedule stop
+var times_per_page = 6;
+var last_times_page = 0;
+var get_times_page = function(sched_index, stop_index, direction) {
+  var data = shuttle_schedule.schedules[sched_index].stops[stop_index];
+  if (direction == "first") {
+    //nop
+  } else if (direction == "up") {
+    last_times_page -= 1;
+  } else if (direction == "down") {
+    last_times_page += 1;
+  }
+  // Bounds checking
+  if (last_times_page < 0)
+    last_times_page = 0;
+  else if (last_times_page*times_per_page >= data.times.length)
+    last_times_page = (data.times.length-1)/times_per_page;
+  //Return the page
+  var index = last_times_page*times_per_page;
+  return data.times.slice(index, index+times_per_page).join('\n');
+};
+
 // Splash screen while waiting for data
 var splash_window = new UI.Window();
 var text = new UI.Text({
@@ -100,7 +122,7 @@ var text = new UI.Text({
   color:'black',
   textOverflow:'wrap',
   textAlign:'center',
-	backgroundColor:'white'
+  backgroundColor:'white'
 });
 
 //Download schedule if needed
@@ -136,6 +158,34 @@ sched_menu.on('select', function(e) {
       items: sched_info[1]
     }]
   });
-
+  //Select to show all times for that stop
+  res_menu.on('select', function(a) {
+    var times_win = new UI.Window();
+    //Schedule and location header
+    var time_head = new UI.Text({
+      position: new Vector2(0, 0), size: new Vector2(144, 18*2),
+      text: sched_info[0]+'\n'+
+            shuttle_schedule.schedules[e.itemIndex].stops[a.itemIndex].location,
+      font: 'gothic-18-bold',
+      color: 'white'
+    });
+    times_win.add(time_head);
+    //Text object to show the times
+    var time_text = new UI.Text({
+      position: new Vector2(0, 18*2), size: new Vector2(144, 168),
+      font: 'gothic-18-bold',
+      color: 'white',
+    });
+    time_text.text(get_times_page(e.itemIndex, a.itemIndex, 'first'));
+    times_win.add(time_text);
+    //Allow for pages to change
+    times_win.on('click', 'up', function(b) {
+      time_text.text(get_times_page(e.itemIndex, a.itemIndex, 'up'));
+    });
+    times_win.on('click', 'down', function(b) {
+      time_text.text(get_times_page(e.itemIndex, a.itemIndex, 'down'));
+    });
+    times_win.show();
+  });
   res_menu.show();
 });
