@@ -54,7 +54,10 @@ function get_next_times(times) {
     in_time = conv_12hr_to_24hr(times[index]);
     test_time.setHours(in_time[0]);
     test_time.setMinutes(in_time[1]);
-    if (time < test_time) {
+    if (time < test_time || index == times.length-1) {
+      //End of day wrap around
+      if (index == times.length-1)
+        index = 0;
       return times.slice(index,(index+3)%times.length)
                   .join(' ').replace(/ AM| PM/g, "");
     }
