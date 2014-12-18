@@ -19,7 +19,7 @@
     "shortName": "RPI Shuttles",
     "uuid": "200e7675-e35d-4dd3-9c08-65e27d5e5b0e",
     "versionCode": 1,
-    "versionLabel": "0.1",
+    "versionLabel": "0.2",
     "watchapp": {
         "watchface": false
     }
