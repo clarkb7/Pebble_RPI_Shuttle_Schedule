@@ -20,6 +20,15 @@ function get_shuttle_schedule() {
                   'schedule_parser/out/rpi_shuttle_schedule.json',
            true);
   req.onload = function(e) {
+    // Check for a new version to download
+    if (req.readyState == 2) {
+      var this_mod = req.getResponseHeader("Last-Modified");
+      if (this_mod == localStorage.last_mod)
+        req.abort();
+      else
+        localStorage.last_mod = this_mod;
+    } else
+    // Store the shuttle schedule locally
     if (req.readyState == 4 && req.status == 200) {
       if(req.status == 200) {
         localStorage.shuttle_schedule = req.responseText;
@@ -62,7 +71,7 @@ function get_next_times(times) {
                   .join(' ').replace(/ AM| PM/g, "");
     }
   }
-  return "Error";
+  return "X X X";
 }
 
 // Returns names of shuttle schedules
@@ -117,7 +126,7 @@ var get_times_page = function(sched_index, stop_index, direction) {
 // Splash screen while waiting for data
 var splash_window = new UI.Window();
 var text = new UI.Text({
-  text:'Downloading shuttle data...',
+  text:'Loading shuttle data...',
   font:'GOTHIC_28_BOLD',
   color:'black',
   textOverflow:'wrap',
@@ -125,13 +134,11 @@ var text = new UI.Text({
   backgroundColor:'white'
 });
 
+// Show splash / loading window
+splash_window.add(text);
+splash_window.show();
 //Download schedule if needed
-if (!localStorage.shuttle_schedule) {
-  // Show splash / loading window
-  splash_window.add(text);
-  splash_window.show();
-  get_shuttle_schedule();
-}
+get_shuttle_schedule();
 
 //Parse the schedule
 shuttle_schedule = JSON.parse(localStorage.shuttle_schedule);
