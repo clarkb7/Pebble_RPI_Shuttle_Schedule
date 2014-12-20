@@ -21,7 +21,7 @@
 ## Not taken from pdf because spaces are a pain
 EAST_STOPS=('Union' 'Colonie' 'Brinsmade' 'Sunset 1 & 2' 'E-lot' 'B-lot' '9th/Sage' 'West lot' 'Sage')
 WEST_STOPS=('Union' 'Sage Ave' 'Blitman' 'City Station' 'Poly Tech' '15th & College')
-
+WEEKEND_WEST_STOPS=('Union' 'Sage Ave' 'Troy Hub' 'Blitman' 'City Station' 'Poly Tech' '15th & College')
 # Remove empty lines, prepend 0 to times, change AM/PM format
 # e.g. 7:49p becomes 07:49 PM
 FIXUP_REG='/^$/d;s/^\([0-9]\):/0\1:/g;s/\([0-9]\)p/\1 PM/g;s/\([0-9]\)a/\1 AM/g'
@@ -83,6 +83,24 @@ SLICE=(20)
 CHOP_TOP=(36)
 KEEP_TOP=(23)
 create_list $OUTFILE EAST_STOPS SLICE CHOP_TOP KEEP_TOP
+# Create a list of weekday west times
+OUTFILE="weekday_west.out"
+SLICE=(0 7)
+CHOP_TOP=(73 73)
+KEEP_TOP=(56 56)
+create_list $OUTFILE WEST_STOPS SLICE CHOP_TOP KEEP_TOP
+# Create a list of Saturday west times
+OUTFILE="saturday_west.out"
+SLICE=(14)
+CHOP_TOP=(73)
+KEEP_TOP=(24)
+create_list $OUTFILE WEEKEND_WEST_STOPS SLICE CHOP_TOP KEEP_TOP
+# Create a list of Sunday west times
+OUTFILE="sunday_west.out"
+SLICE=(14)
+CHOP_TOP=(102)
+KEEP_TOP=(27)
+create_list $OUTFILE WEEKEND_WEST_STOPS SLICE CHOP_TOP KEEP_TOP
 
 # Convert the output files to json
 python txt_to_json.py "$OUT_DIR"

@@ -60,6 +60,12 @@ def main(argv):
   txt_to_json("Weekday East", argv[0] + "/weekday_east.out")
   print('  },')
   txt_to_json("Weekend East", argv[0] + "/weekend_east.out")
+  print('  },')
+  txt_to_json("Weekday West", argv[0] + "/weekday_west.out")
+  print('  },')
+  txt_to_json("Saturday West", argv[0] + "/saturday_west.out")
+  print('  },')
+  txt_to_json("Sunday West", argv[0] + "/sunday_west.out")
   # End the json
   print('  }')
   print('  ]')
