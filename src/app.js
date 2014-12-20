@@ -13,36 +13,36 @@ var Vector2 = require('vector2');
 var shuttle_schedule;
 
 function get_shuttle_schedule() {
-    // Get the Shuttle schedule
-    var req = new XMLHttpRequest();
+  // Get the Shuttle schedule
+  var req = new XMLHttpRequest();
   req.open('GET', 'https://raw.githubusercontent.com/clarkb7/'+
                   'Pebble_RPI_Shuttle_Schedule/master/src/'+
                   'schedule_parser/out/rpi_shuttle_schedule.json',
            true);
-    req.onload = function(e) {
-        if (req.readyState == 4 && req.status == 200) {
-            if(req.status == 200) {
-                localStorage.shuttle_schedule = req.responseText;
-            } else {
-                console.log("Error");
-                localStorage.shuttle_schedule = "Error";
-            }
-        }
-    };
+  req.onload = function(e) {
+    if (req.readyState == 4 && req.status == 200) {
+      if(req.status == 200) {
+        localStorage.shuttle_schedule = req.responseText;
+      } else {
+        console.log("Error");
+        localStorage.shuttle_schedule = "Error";
+      }
+    }
+  };
   req.send(null);
 }
 
 function conv_12hr_to_24hr(time) {
-    var hours = Number(time.match(/^(\d+)/)[1]);
-    var minutes = Number(time.match(/:(\d+)/)[1]);
-    var AMPM = time.match(/\s(.*)$/)[1];
-    if(AMPM == "PM" && hours<12) hours = hours+12;
-    if(AMPM == "AM" && hours==12) hours = hours-12;
-    var sHours = hours.toString();
-    var sMinutes = minutes.toString();
-    if(hours<10) sHours = "0" + sHours;
-    if(minutes<10) sMinutes = "0" + sMinutes;
-    return [hours,minutes];
+ var hours = Number(time.match(/^(\d+)/)[1]);
+ var minutes = Number(time.match(/:(\d+)/)[1]);
+ var AMPM = time.match(/\s(.*)$/)[1];
+ if(AMPM == "PM" && hours<12) hours = hours+12;
+ if(AMPM == "AM" && hours==12) hours = hours-12;
+ var sHours = hours.toString();
+ var sMinutes = minutes.toString();
+ if(hours<10) sHours = "0" + sHours;
+ if(minutes<10) sMinutes = "0" + sMinutes;
+ return [hours,minutes];
 }
 
 function get_next_times(times) {
