@@ -32,32 +32,57 @@ TXT_NAME="$OUT_DIR/ShuttleSchedule.txt"
 mkdir -p "$OUT_DIR"
 
 # Convert from pdf to txt and remove leading spaces from lines
-pdftotext -layout "${1:-ShuttleSchedule.pdf}" "$TXT_NAME"
+pdftotext -layout -raw "${1:-ShuttleSchedule.pdf}" "$TXT_NAME"
 sed -i 's/^ //g' "$TXT_NAME"
 
-# Create a list of weekday east times
-OUTFILE="$OUT_DIR/weekday_east.out"
-echo '' > "$OUTFILE"
-for col in {1..9}; do
-  # Print shuttle stop name to file
-  echo 'loc: ' ${EAST_STOPS[ $(($col-1)) ]} >> "$OUTFILE"
-  #               | cut into colums        |get $col |  chop extra info      | keep only numbers
-  cat "$TXT_NAME" | tr -s ' ' | cut -s -d' ' -f0$col | tail -n+4 | head -n57 | grep -e '^[0-9]*:' >> "$OUTFILE"
-  cat "$TXT_NAME" | tr -s ' ' | cut -s -d' ' -f1$col | tail -n+4 | head -n57 | grep -e '^[0-9]*:' >> "$OUTFILE"
-  cat "$TXT_NAME" | tr -s ' ' | cut -s -d' ' -f2$col | tail -n+4 | head -n16 | grep -e '^[0-9]*:' >> "$OUTFILE"
-done
-sed -i "$FIXUP_REG" "$OUTFILE"
+# Creates a list of times
+# $1 = Output file name
+# $2 = First column offset
+# $3 = Array of stop names
+# $4 = Array of # of lines to chop off of top
+# $5 = Arrat of # of lines to keep from top after chop
+function create_list {
+  # Create output file
+  local OUTFILE="$OUT_DIR/$1"
+  echo '' > "$OUTFILE"
+  # Get array arguments by name
+  local tmp=$2[@]
+  local names=("${!tmp}")
+  tmp=$3[@]
+  local slice=("${!tmp}")
+  tmp=$4[@]
+  local chop=("${!tmp}")
+  tmp=$5[@]
+  local keep=("${!tmp}")
+  local num_itr=$(( ${#chop[@]}-1 ))
+  local num_names=${#names[@]}
+  # For each location, get the times
+  for col in $(eval echo {1..$num_names}); do
+    # Print shuttle stop names to file
+    echo 'loc: ' ${names[ $(($col-1)) ]} >> "$OUTFILE"
+    # Times might be in several places
+    for i in $(eval echo {0..$num_itr}); do
+      #               | cut into colums         |get $col |  chop extra info
+      cat "$TXT_NAME" | tr -s ' ' | cut -s -d' ' -f$(( ${slice[i]}+$col )) |
+      #                                        | keep only numbers
+        tail -n+${chop[i]} | head -n${keep[i]} | grep -e '^[0-9]*:' >> "$OUTFILE"
+    done
+  done
+  sed -i "$FIXUP_REG" "$OUTFILE"
+}
 
+# Create a list of weekday east times
+OUTFILE="weekday_east.out"
+SLICE=(0 10 20)
+CHOP_TOP=(2 2 2)
+KEEP_TOP=(57 57 16)
+create_list $OUTFILE EAST_STOPS SLICE CHOP_TOP KEEP_TOP
 # Create a list of weekend east times
-OUTFILE="$OUT_DIR/weekend_east.out"
-echo '' > "$OUTFILE"
-for col in {1..9}; do
-  # Print shuttle stop name to file
-  echo 'loc: ' ${EAST_STOPS[ $((col-1)) ]} >> "$OUTFILE"
-  #               | cut into colums        |get $col |  chop extra info       | keep only numbers
-  cat "$TXT_NAME" | tr -s ' ' | cut -s -d' ' -f2$col | tail -n+38 | head -n23 | grep -e '^[0-9]*:' >> "$OUTFILE"
-done
-sed -i "$FIXUP_REG" "$OUTFILE"
+OUTFILE="weekend_east.out"
+SLICE=(20)
+CHOP_TOP=(36)
+KEEP_TOP=(23)
+create_list $OUTFILE EAST_STOPS SLICE CHOP_TOP KEEP_TOP
 
 # Convert the output files to json
 python txt_to_json.py "$OUT_DIR"
