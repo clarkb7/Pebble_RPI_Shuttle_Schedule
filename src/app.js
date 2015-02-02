@@ -185,6 +185,7 @@ sched_menu.on('select', function(e) {
     var time_text = new UI.Text({
       position: new Vector2(0, 18*2), size: new Vector2(144, 168),
       font: 'gothic-18-bold',
+      textAlign: 'center',
       color: 'white',
     });
     time_text.text(get_times_page(e.itemIndex, a.itemIndex, 'first'));
