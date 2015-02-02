@@ -24,7 +24,9 @@ WEST_STOPS=('Union' 'Sage Ave' 'Blitman' 'City Station' 'Poly Tech' '15th & Coll
 WEEKEND_WEST_STOPS=('Union' 'Sage Ave' 'Troy Hub' 'Blitman' 'City Station' 'Poly Tech' '15th & College')
 # Remove empty lines, prepend 0 to times, change AM/PM format
 # e.g. 7:49p becomes 07:49 PM
-FIXUP_REG='/^$/d;s/^\([0-9]\):/0\1:/g;s/\([0-9]\)p/\1 PM/g;s/\([0-9]\)a/\1 AM/g'
+# unknown/invalid uses XM
+TIME_REG='[0-9][0-9]:[0-9][0-9]'
+FIXUP_REG="/^$/d;s/^\([0-9]\):/0\1:/g;s/\($TIME_REG\)p/\1 PM/g;s/\($TIME_REG\)a/\1 AM/g;s/\($TIME_REG\)$/\1 XM/g"
 
 #Output info
 OUT_DIR="${2-./out}"
@@ -103,4 +105,4 @@ KEEP_TOP=(27)
 create_list $OUTFILE WEEKEND_WEST_STOPS SLICE CHOP_TOP KEEP_TOP
 
 # Convert the output files to json
-python txt_to_json.py "$OUT_DIR"
+python3 txt_to_json.py "$OUT_DIR"
