@@ -70,11 +70,9 @@ function get_next_times(times) {
     test_time.setHours(in_time[0]);
     test_time.setMinutes(in_time[1]);
     if (time < test_time || index == times.length-1) {
-      //End of day wrap around
-      if (index == times.length-1)
-        index = 0;
-      return times.slice(index,(index+3)%times.length)
-                  .join(' ').replace(/ AM| PM/g, "");
+      var res = [times[index%times.length], times[(index+1)%times.length],
+                 times[(index+2)%times.length]];
+      return res.join(' ').replace(/ AM| PM| XM/g, "");
     }
   }
   return "X X X";
