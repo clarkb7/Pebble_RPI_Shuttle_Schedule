@@ -22,15 +22,18 @@ function get_shuttle_schedule() {
   req.onload = function(e) {
     // Check for a new version to download
     if (req.readyState == 2) {
-      var this_mod = req.getResponseHeader("Last-Modified");
-      if (this_mod == localStorage.last_mod)
+      var this_tag = req.getResponseHeader("ETag");
+      if (this_tag == localStorage.last_tag) {
+        console.log("Schedule found in local storage");
         req.abort();
-      else
-        localStorage.last_mod = this_mod;
+      } else {
+        localStorage.last_tag = this_tag;
+      }
     } else
     // Store the shuttle schedule locally
     if (req.readyState == 4 && req.status == 200) {
       if(req.status == 200) {
+        console.log("Saving shuttle schedule to local storage");
         localStorage.shuttle_schedule = req.responseText;
       } else {
         console.log("Error");
