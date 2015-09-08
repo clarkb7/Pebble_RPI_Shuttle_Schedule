@@ -19,7 +19,7 @@ function get_shuttle_schedule() {
                   'Pebble_RPI_Shuttle_Schedule/master/src/'+
                   'schedule_parser/out/rpi_shuttle_schedule.json',
            true);
-  req.onload = function(e) {
+  req.onreadystatechange = function(e) {
     // Check for a new version to download
     if (req.readyState == 2) {
       var this_tag = req.getResponseHeader("ETag");
