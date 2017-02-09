@@ -5,7 +5,7 @@
     ],
     "companyName": "Branden Clark",
     "longName": "RPI Shuttle Schedule",
-    "projectType": "pebblejs",
+    "sdkVersion": "3",
     "resources": {
         "media": [
             {
@@ -13,13 +13,35 @@
                 "menuIcon": true,
                 "name": "IMAGE_MENU_ICON_PNG",
                 "type": "png"
+            },
+            {
+                "file": "images/external/shuttle_icon.png",
+                "name": "IMAGE_LOGO_SPLASH",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/tile_splash.png",
+                "name": "IMAGE_TILE_SPLASH",
+                "type": "bitmap"
+            },
+            {
+                "file": "fonts/UbuntuMono-Regular.ttf",
+                "name": "MONO_FONT_14",
+                "type": "font"
             }
         ]
     },
     "shortName": "RPI Shuttles",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk",
+        "diorite",
+        "emery"
+    ],
     "uuid": "200e7675-e35d-4dd3-9c08-65e27d5e5b0e",
     "versionCode": 1,
-    "versionLabel": "0.5",
+    "versionLabel": "0.6",
     "watchapp": {
         "watchface": false
     }
